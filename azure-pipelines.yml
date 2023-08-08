@@ -16,7 +16,7 @@ variables:
   CONTAINERAPPS_APP: album-backend-api
   CONTAINERAPPS_ENVIRONMENT: aca-environment
   RESOURCE_GROUP: rg-containerapps-azure-pipelines
-  TAG: '$(Build.BuildId)'
+  TAG: 'latest'
 
 stages:
 - stage: Build
@@ -47,7 +47,7 @@ stages:
         containerRegistry: 'dockerhub-connection'
         repository: jocasmen94/album-backend-api
         command: 'push'
-        tags: '$(TAG)'
+        tags: 'latest'
 
 - stage: Deploy
   displayName: Deploy to Container Apps
