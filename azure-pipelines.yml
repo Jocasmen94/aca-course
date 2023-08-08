@@ -5,25 +5,24 @@ trigger:
   paths:
     include:
     - azure-pipelines.yaml
-    exclude:
-    - Readme.md
 
 resources:
 - repo: self
 
 variables:
   IMAGE_NAME: houssemdocker/album-backend-api
+  DOCKERHUB_REPOSITORY: jocasmen94/album-backend-api
+  TAG: 'latest'  # You can change this to a different tag if needed
   CONTAINERAPPS_APP: album-backend-api
   CONTAINERAPPS_ENVIRONMENT: aca-environment
   RESOURCE_GROUP: rg-containerapps-azure-pipelines
-  TAG: 'latest'
 
 stages:
-- stage: Build
-  displayName: Build and push image
+- stage: BuildAndPush
+  displayName: Build and Push Docker Image
   jobs:
-  - job: Build
-    displayName: Build
+  - job: BuildAndPushJob
+    displayName: Build and Push
     pool:
       vmImage: ubuntu-latest
     steps:
@@ -41,13 +40,20 @@ stages:
       inputs:
         command: login
         containerRegistry: 'dockerhub-connection'
+
+    - task: Docker@2
+      displayName: Tag image
+      inputs:
+        command: tag
+        arguments: '$(IMAGE_NAME):$(TAG) $(DOCKERHUB_REPOSITORY):$(TAG)'
+
     - task: Docker@2
       displayName: Push image to Docker Hub
       inputs:
         containerRegistry: 'dockerhub-connection'
-        repository: jocasmen94/album-backend-api
+        repository: $(DOCKERHUB_REPOSITORY)
         command: 'push'
-        tags: 'latest'
+        tags: '$(TAG)'
 
 - stage: Deploy
   displayName: Deploy to Container Apps
@@ -62,7 +68,7 @@ stages:
       displayName: Deploy new container version
       inputs:
         azureSubscription: 'demo'
-        imageToDeploy: '$(IMAGE_NAME):$(TAG)'
+        imageToDeploy: '$(DOCKERHUB_REPOSITORY):$(TAG)'
         containerAppName: '$(CONTAINERAPPS_APP)'
         resourceGroup: '$(RESOURCE_GROUP)'
         containerAppEnvironment: '$(CONTAINERAPPS_ENVIRONMENT)'
