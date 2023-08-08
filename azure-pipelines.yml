@@ -45,7 +45,7 @@ stages:
       displayName: Push image to Docker Hub
       inputs:
         containerRegistry: 'dockerhub-connection'
-        repository: $(IMAGE_NAME)
+        repository: jocasmen94/album-backend-api
         command: 'push'
         tags: '$(TAG)'
 
