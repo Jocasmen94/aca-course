@@ -12,7 +12,7 @@ resources:
 variables:
   IMAGE_NAME: houssemdocker/album-backend-api
   DOCKERHUB_REPOSITORY: jocasmen94/album-backend-api
-  TAG: 'latest'  # You can change this to a different tag if needed
+  TAG: '$(Build.BuildNumber)'  # Use Build.BuildNumber as the tag
   CONTAINERAPPS_APP: album-backend-api
   CONTAINERAPPS_ENVIRONMENT: aca-environment
   RESOURCE_GROUP: rg-containerapps-azure-pipelines
